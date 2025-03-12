@@ -3,9 +3,9 @@ import { StatusCode } from "#types/main";
 type ErrorStatusCode = Exclude<StatusCode, 200 | 201>;
 
 class ApiError extends Error {
-	statusCode: ErrorStatusCode;
+	statusCode: number;
 
-	constructor(statusCode: ErrorStatusCode, message: string) {
+	constructor(statusCode: number, message: string) {
 		super(message);
 		this.statusCode = statusCode;
 	}

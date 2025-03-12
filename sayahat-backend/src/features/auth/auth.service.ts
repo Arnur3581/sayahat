@@ -1,17 +1,24 @@
-import { UserModel } from "../../models/user.model";
+import { ApiError } from "#errors/ApiError";
+import { UserModel } from "#models/user.model";
 import {
 	generateAccessToken,
 	generateRefreshToken,
-} from "../../utils/generateTokens";
+} from "#utils/generateTokens";
+import { verifyToken } from "#utils/verifyToken";
 
 import bcrypt from "bcryptjs";
-import { verifyToken } from "../../utils/verifyToken";
 
 export class AuthService {
 	async signup(username: string, password: string, email: string) {
-		const candidate = await UserModel.findOne({ username }).lean();
+		const candidate = await UserModel.findOne({
+			$or: [{ username: username }, { email: email }],
+		}).lean();
+
 		if (candidate) {
-			throw new Error("User already exists");
+			throw new ApiError(
+				409,
+				"This username is already in use or the email is already registered"
+			);
 		}
 
 		const passwordHash = await bcrypt.hash(password, 12);
@@ -33,7 +40,7 @@ export class AuthService {
 		}).lean();
 
 		if (!user || !bcrypt.compareSync(password, user.password)) {
-			throw new Error("Wrong password or login");
+			throw new ApiError(400, "Wrong password or login");
 		}
 
 		const accessToken = generateAccessToken({ userId: user._id });

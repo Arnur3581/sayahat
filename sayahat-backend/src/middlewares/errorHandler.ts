@@ -6,7 +6,7 @@ const errorHandler = (
 	res: Response,
 	next: NextFunction
 ) => {
-	res.status(500).send(`You stupid ass nigga: ${err}`);
+	res.status(500).send(err);
 };
 
 export { errorHandler };

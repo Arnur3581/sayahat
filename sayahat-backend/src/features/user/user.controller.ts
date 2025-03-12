@@ -5,6 +5,7 @@ const userService = new UserService();
 
 export class UserController {
 	getUsersByAmount(req: Request, res: Response, next: NextFunction) {}
+
 	async getUserById(req: Request, res: Response, next: NextFunction) {
 		try {
 			const user = await userService.getUserById(req.params.userId);
